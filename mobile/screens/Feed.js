@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Text } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import FeedPostCard from '../components/FeedCard';
 
 const FeedScreen = () => {
@@ -25,7 +25,16 @@ const FeedScreen = () => {
           date="12-9-2"
           text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea"
         />
-        {/* Add more FeedPostCard components as needed */}
+        <FeedPostCard
+          avatar={null}
+          date="12-9-2"
+          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea"
+        />
+         <FeedPostCard
+          avatar={null}
+          date="12-9-2"
+          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea"
+        />
       </View>
     </ScrollView>
   );
