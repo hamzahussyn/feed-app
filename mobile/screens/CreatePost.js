@@ -28,18 +28,19 @@ const CreatePostScreen = () => {
       console.log("here");
 
       for (const image of selectedImages) {
-        data.append("images", image);
+        const decodedString = atob(image.base64);
+        const binaryData = new Uint8Array(decodedString.length);
+        for (let i = 0; i < decodedString.length; i++) {
+          binaryData[i] = decodedString.charCodeAt(i);
+        }
+        const blob = new Blob([binaryData], {
+          type: "application/octet-stream",
+        });
+        const file = new File([blob], image.fileName, { type: image.mimeType });
+        data.append("images", file);
       }
-      // data.append(
-      //   "images",
-      //   selectedImages.map((image) => ({
-      //     uri: image,
-      //     name: image.fileName,
-      //     type: image.mimeType,
-      //   }))
-      // );
     }
-    console.log('data', JSON.stringify(data.get('images')));
+    console.log("data", JSON.stringify(data.get("images")));
     console.log(
       selectedImages.map((image) => ({
         uri: image.uri,
@@ -66,9 +67,11 @@ const CreatePostScreen = () => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
-    console.log(result);
+    console.log("what i want", result.assets);
+    console.log("devoded", atob(result.assets[0].base64));
 
     if (!result.canceled) {
       setSelectedImages((prevImages) => [...prevImages, ...result.assets]);
@@ -77,7 +80,6 @@ const CreatePostScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Card with "Create Post" text */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>What's on your mind</Text>
         <TextInput
@@ -96,7 +98,6 @@ const CreatePostScreen = () => {
         >
           <Ionicons name="attach" size={40} color="teal" />
         </TouchableOpacity>
-        {/* Send button */}
         <TouchableOpacity
           disabled={posting}
           activeOpacity={0.1}
