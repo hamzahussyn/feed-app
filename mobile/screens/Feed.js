@@ -46,7 +46,7 @@ const FeedScreen = () => {
           ? feedListing.map((f) => (
               <FeedPostCard
                 avatar={null}
-                date="12-2-3"
+                date={f.createdAt}
                 text={f.text}
                 imageUrls={f.images}
                 key={f._id}

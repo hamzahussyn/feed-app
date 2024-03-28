@@ -15,6 +15,20 @@ const FeedPostCard = ({ avatar, date, text, imageUrls }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
 
+  const formatDate = (createdAt) => {
+    const date = new Date(createdAt);
+    const options = {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    };
+    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
+      date
+    );
+
+    return formattedDate;
+  };
+
   const handleImagePress = (imageUrl) => {
     setSelectedImage(imageUrl);
     setIsViewerVisible(true);
@@ -25,9 +39,9 @@ const FeedPostCard = ({ avatar, date, text, imageUrls }) => {
       <View style={styles.header}>
         <View style={styles.avatarContainer}>
           <Ionicons name="person-circle-outline" size={24} color="black" />
-          <Text style={styles.avatarText}>From {avatar}</Text>
+          <Text style={styles.avatarText}>User {avatar}</Text>
         </View>
-        <Text style={styles.dateText}>{date}</Text>
+        <Text style={styles.dateText}>{formatDate(date)}</Text>
       </View>
       <View style={styles.border} />
       <Text style={styles.textContent}>{text}</Text>
@@ -52,7 +66,6 @@ const FeedPostCard = ({ avatar, date, text, imageUrls }) => {
         </ScrollView>
       ) : null}
 
-      {/* Image viewer modal */}
       <Modal visible={isViewerVisible} transparent={true}>
         <View style={styles.imageViewerContainer}>
           <TouchableOpacity
