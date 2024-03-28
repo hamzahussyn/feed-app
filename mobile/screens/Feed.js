@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { View, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
 import FeedPostCard from "../components/FeedCard";
-import { fetchFeedPosts } from "../api/service/feed";
+import { useFetchFeedPosts } from "../api/service/feed";
 
 const FeedScreen = () => {
-  const [feedListig, setFeedListing] = useState([]);
+  const { fetch } = useFetchFeedPosts();
+  const {
+    listing: feedListing,
+    loading,
+    error,
+  } = useSelector((state) => state.feed);
 
   const handleScroll = (event) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
@@ -16,7 +22,7 @@ const FeedScreen = () => {
   };
 
   useEffect(() => {
-    fetchFeedPosts().then((res) => setFeedListing(res));
+    fetch();
   }, []);
 
   return (
@@ -31,8 +37,13 @@ const FeedScreen = () => {
       scrollEventThrottle={16}
     >
       <View style={{ paddingBottom: 20 }}>
-        {feedListig.length
-          ? feedListig.map((f) => (
+        {loading ? (
+          <View style={styles.spinnerContainer}>
+            <ActivityIndicator size="large" color="blue" />
+          </View>
+        ) : null}
+        {feedListing.length
+          ? feedListing.map((f) => (
               <FeedPostCard
                 avatar={null}
                 date="12-2-3"
@@ -45,5 +56,23 @@ const FeedScreen = () => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  spinnerContainer: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+});
 
 export default FeedScreen;
