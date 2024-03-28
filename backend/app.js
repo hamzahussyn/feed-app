@@ -2,11 +2,17 @@ const express = require("express");
 const { StatusCodes } = require("http-status-codes");
 const FeedRouter = require("./routers/feed.router");
 const path = require("node:path");
+const cors = require("cors");
 require("dotenv").config();
 require("./db");
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", function (req, res, next) {
