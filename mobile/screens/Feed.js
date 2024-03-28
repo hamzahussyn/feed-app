@@ -1,40 +1,46 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
-import FeedPostCard from '../components/FeedCard';
+import React, { useEffect, useState } from "react";
+import { View, ScrollView } from "react-native";
+import FeedPostCard from "../components/FeedCard";
+import { fetchFeedPosts } from "../api/service/feed";
 
 const FeedScreen = () => {
+  const [feedListig, setFeedListing] = useState([]);
+
   const handleScroll = (event) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
+    const isAtBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height;
     if (isAtBottom) {
-      console.log('Scrolled to the bottom!');
-      // Your code to handle scrolling to the bottom goes here
+      console.log("Scrolled to the bottom!");
     }
   };
+
+  useEffect(() => {
+    fetchFeedPosts().then((res) => setFeedListing(res));
+  }, []);
 
   return (
     <ScrollView
       style={{ flex: 1 }}
-      contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}
+      contentContainerStyle={{
+        justifyContent: "center",
+        alignItems: "center",
+        flexGrow: 1,
+      }}
       onScroll={handleScroll}
-      scrollEventThrottle={16} 
+      scrollEventThrottle={16}
     >
-      <View style={{ paddingBottom: 20 }}> 
-        <FeedPostCard
-          avatar={null}
-          date="12-9-2"
-          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea"
-        />
-        <FeedPostCard
-          avatar={null}
-          date="12-9-2"
-          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea"
-        />
-         <FeedPostCard
-          avatar={null}
-          date="12-9-2"
-          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea"
-        />
+      <View style={{ paddingBottom: 20 }}>
+        {feedListig.length
+          ? feedListig.map((f) => (
+              <FeedPostCard
+                avatar={null}
+                date="12-2-3"
+                text={f.text}
+                key={f._id}
+              />
+            ))
+          : null}
       </View>
     </ScrollView>
   );
