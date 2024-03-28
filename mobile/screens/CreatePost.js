@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   View,
   Text,
@@ -11,48 +12,52 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { createFeedPost } from "../api/service/feed";
+import { appendListing } from "../redux-store/feed-slice";
 
 const CreatePostScreen = () => {
+  const dispatch = useDispatch();
   const [postText, setPostText] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
   const [posting, setPosting] = useState(false);
-  console.log(selectedImages);
+
+  const postCreateCleanup = () => {
+    setPosting(false);
+    setPostText("");
+    setSelectedImages([]);
+  };
 
   const handlePost = async () => {
-    if (!postText.length) return;
+    if (!postText.length) {
+      alert("Post text cannot be empty.");
+      return;
+    }
 
-    const data = new FormData();
-    data.append("text", postText);
+    const data = {
+      text: postText,
+      images: [],
+    };
 
     if (selectedImages.length) {
-      console.log("here");
-
       for (const image of selectedImages) {
-        const decodedString = atob(image.base64);
-        const binaryData = new Uint8Array(decodedString.length);
-        for (let i = 0; i < decodedString.length; i++) {
-          binaryData[i] = decodedString.charCodeAt(i);
-        }
-        const blob = new Blob([binaryData], {
-          type: "application/octet-stream",
+        data.images.push({
+          name: image.fileName,
+          ext: image.mimeType,
+          base64: image.base64,
         });
-        const file = new File([blob], image.fileName, { type: image.mimeType });
-        data.append("images", file);
       }
     }
-    console.log("data", JSON.stringify(data.get("images")));
-    console.log(
-      selectedImages.map((image) => ({
-        uri: image.uri,
-        type: image.mimeType,
-        name: image.fileName,
-      }))
-    );
 
     setPosting(true);
-    const res = await createFeedPost(data);
-    console.log(res);
-    setPosting(false);
+
+    createFeedPost(data)
+      .then((res) => {
+        dispatch(appendListing({ feedItem: res }));
+        alert("You posted to your feed!");
+      })
+      .catch((err) => alert("Something went wrong."))
+      .finally(() => {
+        postCreateCleanup();
+      });
   };
 
   const handleImagePick = async () => {
@@ -69,9 +74,6 @@ const CreatePostScreen = () => {
       quality: 1,
       base64: true,
     });
-
-    console.log("what i want", result.assets);
-    console.log("devoded", atob(result.assets[0].base64));
 
     if (!result.canceled) {
       setSelectedImages((prevImages) => [...prevImages, ...result.assets]);

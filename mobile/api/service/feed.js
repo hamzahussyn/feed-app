@@ -5,7 +5,7 @@ import { setFeedListing } from "../../redux-store/feed-slice";
 const serviceUrl = "feed";
 
 export const createFeedPost = (data) => {
-  const res = post(serviceUrl, data, { "Content-Type": "multipart/form-data" });
+  const res = post(serviceUrl, data);
   return res;
 };
 
