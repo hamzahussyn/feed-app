@@ -48,6 +48,7 @@ const FeedScreen = () => {
                 avatar={null}
                 date="12-2-3"
                 text={f.text}
+                imageUrls={f.images}
                 key={f._id}
               />
             ))
