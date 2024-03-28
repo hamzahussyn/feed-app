@@ -3,11 +3,14 @@ const { StatusCodes } = require("http-status-codes");
 const FeedRouter = require("./routers/feed.router");
 const path = require("node:path");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 require("dotenv").config();
 require("./db");
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: "*",
